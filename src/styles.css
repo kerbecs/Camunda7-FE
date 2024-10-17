@@ -1,1 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bpmn-js/dist/assets/diagram-js.css";
+@import "bpmn-js/dist/assets/bpmn-js.css";
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+@import "bpmn-js-connectors-extension/dist/connectors-extension.css";
+@import "@bpmn-io/element-template-chooser/dist/element-template-chooser.css";

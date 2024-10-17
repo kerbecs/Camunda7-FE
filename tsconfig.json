@@ -18,6 +18,12 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "paths": {
+      "@types/*": ["src/@types/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
     "lib": [
       "ES2022",
       "dom"
