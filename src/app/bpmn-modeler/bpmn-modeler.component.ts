@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import Modeler from 'camunda-bpmn-js/lib/camunda-cloud/Modeler'; // Zeebe Modeler pentru Camunda 8
+import Modeler from 'camunda-bpmn-js/lib/camunda-platform/Modeler';
 
 import zeebeModdlePackage from 'zeebe-bpmn-moddle/resources/zeebe.json';
 
@@ -10,13 +10,14 @@ import ElementTemplateChooserModule from '@bpmn-io/element-template-chooser';
 
 import {
   BpmnPropertiesPanelModule,
-  BpmnPropertiesProviderModule,
+  BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule,
   ZeebePropertiesProviderModule // Folosit pentru Camunda 8
 } from 'bpmn-js-properties-panel';
 
 import './styles.css';
 import {HttpClient} from "@angular/common/http";
 import {CreateAppendAnythingModule, CreateAppendElementTemplatesModule} from "bpmn-js-create-append-anything";
+import camundaModdlePackage from "camunda-bpmn-moddle/resources/camunda";
 
 @Component({
   selector: 'app-bpmn-modeler',
@@ -29,45 +30,53 @@ export class BpmnModelerComponent implements AfterViewInit {
   @ViewChild("container")
   private container! : ElementRef;
 
-  private diagramXml: string = ` <?xml version="1.0" encoding="UTF-8"?>
-     <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_02r90y2" targetNamespace="http://bpmn.io/schema/bpmn">
-       <bpmn:process id="Process_1s5zn7v" isExecutable="true">
-         <bpmn:startEvent id="StartEvent_1">
-           <bpmn:outgoing>Flow_1e64c8b</bpmn:outgoing>
-         </bpmn:startEvent>
-         <bpmn:endEvent id="Event_0rzkx5b">
-           <bpmn:incoming>Flow_1b80get</bpmn:incoming>
-         </bpmn:endEvent>
-         <bpmn:sequenceFlow id="Flow_1e64c8b" sourceRef="StartEvent_1" targetRef="Activity_1jlibrg" />
-         <bpmn:sequenceFlow id="Flow_1b80get" sourceRef="Activity_1jlibrg" targetRef="Event_0rzkx5b" />
-         <bpmn:userTask id="Activity_1jlibrg" name="A user task here">
-           <bpmn:incoming>Flow_1e64c8b</bpmn:incoming>
-           <bpmn:outgoing>Flow_1b80get</bpmn:outgoing>
-         </bpmn:userTask>
-       </bpmn:process>
-       <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-         <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1s5zn7v">
-           <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-             <dc:Bounds x="179" y="102" width="36" height="36" />
-           </bpmndi:BPMNShape>
-           <bpmndi:BPMNShape id="Event_0rzkx5b_di" bpmnElement="Event_0rzkx5b">
-             <dc:Bounds x="812" y="102" width="36" height="36" />
-           </bpmndi:BPMNShape>
-           <bpmndi:BPMNShape id="Activity_0h5dmju_di" bpmnElement="Activity_1jlibrg">
-             <dc:Bounds x="390" y="80" width="100" height="80" />
-             <bpmndi:BPMNLabel />
-           </bpmndi:BPMNShape>
-           <bpmndi:BPMNEdge id="Flow_1e64c8b_di" bpmnElement="Flow_1e64c8b">
-             <di:waypoint x="215" y="120" />
-             <di:waypoint x="390" y="120" />
-           </bpmndi:BPMNEdge>
-           <bpmndi:BPMNEdge id="Flow_1b80get_di" bpmnElement="Flow_1b80get">
-             <di:waypoint x="490" y="120" />
-             <di:waypoint x="812" y="120" />
-           </bpmndi:BPMNEdge>
-         </bpmndi:BPMNPlane>
-       </bpmndi:BPMNDiagram>
-     </bpmn:definitions>
+  private diagramXml: string = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                   id="_B0ppIPFYEeOlke_H2tkzCA"
+                   targetNamespace="http://camunda.org/examples">
+  <bpmn2:process id="process_id" name="My Process" isExecutable="true">
+    <bpmn2:startEvent id="start_event_id" name="Start Event">
+      <bpmn2:outgoing>flow_id</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:serviceTask id="service_task_id" name="Service Task" camunda:class="your.service.class">
+      <bpmn2:incoming>flow_id</bpmn2:incoming>
+      <bpmn2:outgoing>end_flow_id</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="end_event_id" name="End Event">
+      <bpmn2:incoming>end_flow_id</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="flow_id" sourceRef="start_event_id" targetRef="service_task_id"/>
+    <bpmn2:sequenceFlow id="end_flow_id" sourceRef="service_task_id" targetRef="end_event_id"/>
+  </bpmn2:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process_id">
+    <bpmndi:BPMNPlane bpmnElement="process_id">
+      <bpmndi:BPMNShape bpmnElement="start_event_id" id="BPMNShape_start_event_id">
+        <dc:Bounds x="100" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="service_task_id" id="BPMNShape_service_task_id">
+        <dc:Bounds x="200" y="100" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end_event_id" id="BPMNShape_end_event_id">
+        <dc:Bounds x="350" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow_id" id="BPMNEdge_flow_id">
+        <di:waypoint x="136" y="118"/>
+        <di:waypoint x="200" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="end_flow_id" id="BPMNEdge_end_flow_id">
+        <di:waypoint x="300" y="118"/>
+        <di:waypoint x="350" y="118"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+
   `;
 
   constructor(private http : HttpClient) {
@@ -87,15 +96,14 @@ export class BpmnModelerComponent implements AfterViewInit {
       additionalModules: [
         BpmnPropertiesPanelModule,
         BpmnPropertiesProviderModule,
-        ZeebePropertiesProviderModule,  // Modificat pentru Zeebe
         ConnectorsExtensionModule,
         ElementTemplateIconRenderer,
         ElementTemplateChooserModule,
         CreateAppendAnythingModule,
-        CreateAppendElementTemplatesModule
+        CreateAppendElementTemplatesModule,
       ],
       moddleExtensions: {
-        zeebe: zeebeModdlePackage  // Schimbat la zeebe
+        camunda: camundaModdlePackage
       },
       propertiesPanel: {
         parent: '#properties-panel-container'
@@ -121,9 +129,22 @@ export class BpmnModelerComponent implements AfterViewInit {
   }
 
   private loadElementTemplates(): void {
+    const templates = []
     this.http.get('assets/slack.json').subscribe((templates) => {
       // @ts-ignore
       this.modeler.get('elementTemplates').set(templates);
+    });
+    this.http.get('assets/another-rest.json').subscribe((templates) => {
+      // @ts-ignore
+      this.modeler.get('elementTemplates').set(templates);
+    });
+  }
+  exportXml(): void {
+    this.modeler.saveXML({ format: true }).then((result) => {
+      const exportedXml = result.xml; // Actualizează variabila care conține XML-ul exportat
+      console.log(exportedXml)
+    }).catch((err) => {
+      console.error('Failed to export XML', err);
     });
   }
 }
