@@ -11,7 +11,6 @@ import ElementTemplateChooserModule from '@bpmn-io/element-template-chooser';
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule,
-  ZeebePropertiesProviderModule // Folosit pentru Camunda 8
 } from 'bpmn-js-properties-panel';
 
 import './styles.css';
